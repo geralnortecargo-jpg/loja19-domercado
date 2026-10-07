@@ -26,23 +26,20 @@ export default function AdminPage() {
     setMessage('');
 
     try {
-      // 1. Upload da imagem para o bucket 'produtos'
       const fileExt = imageFile.name.split('.').pop();
       const fileName = `${Date.now()}.${fileExt}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('produtos')
         .upload(fileName, imageFile);
 
       if (uploadError) throw uploadError;
 
-      // 2. Obter URL pública da imagem
       const { data: urlData } = supabase.storage
         .from('produtos')
         .getPublicUrl(fileName);
 
       const imageUrl = urlData.publicUrl;
 
-      // 3. Inserir dados do produto na tabela 'products'
       const { error: insertError } = await supabase.from('products').insert([
         {
           title,
@@ -58,13 +55,13 @@ export default function AdminPage() {
       if (insertError) throw insertError;
 
       setMessage('✅ Produto adicionado com sucesso!');
-      // Limpar formulário
       setTitle('');
       setPrice('');
       setDescription('');
       setImageFile(null);
-    } catch (err: any) {
-      setMessage(`❌ Erro: ${err.message || 'Ocorreu um erro ao guardar.'}`);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Ocorreu um erro ao guardar.';
+      setMessage(`❌ Erro: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
@@ -151,7 +148,7 @@ export default function AdminPage() {
               onChange={(e) => setCategory(e.target.value)}
               className="w-full p-2.5 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800 bg-white"
             >
-              <option value="casacos">Casacos & Sobretudoss</option>
+              <option value="casacos">Casacos & Sobretudos</option>
               <option value="vestidos">Vestidos & Saias</option>
               <option value="camisolas">Camisolas & Tops</option>
               <option value="calcas">Calças & Calções</option>
