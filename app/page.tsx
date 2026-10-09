@@ -19,24 +19,31 @@ interface Product {
 const CAROUSEL_SLIDES = [
   {
     id: 1,
-    title: 'Coleção Vestuário & Estilo',
-    subtitle: 'Peças exclusivas de segunda mão na Foz do Douro',
-    image: '/bg-loja.jpg',
-    tag: 'Destaques da Semana'
+    title: 'Vestido Boho Vintage',
+    subtitle: 'Edição limitada em segunda mão com detalhes únicos',
+    image: '/vestido.jpg',
+    tag: 'Destaque'
   },
   {
     id: 2,
-    title: 'Acessórios & Gorros',
-    subtitle: 'Marcas selecionadas como Carhartt e muito mais',
-    image: '/bg-loja.jpg',
-    tag: 'Novidades'
+    title: 'Gorro Carhartt Azul',
+    subtitle: 'Estilo urbano e proteção para os dias frios',
+    image: '/gorro.jpg',
+    tag: 'Novidade'
   },
   {
     id: 3,
-    title: 'Casacos & Agasalhos',
-    subtitle: 'Conforto e elegância para os dias mais frios',
-    image: '/bg-loja.jpg',
+    title: 'Casaco Acolchoado Cinza',
+    subtitle: 'Conforto e elegância para a estação',
+    image: '/casaco.jpg',
     tag: 'Saldos'
+  },
+  {
+    id: 4,
+    title: 'Calças Padrão Bandana',
+    subtitle: 'Corte moderno e tecido confortável',
+    image: '/calcas.jpg',
+    tag: 'Exclusivo'
   }
 ];
 
@@ -113,28 +120,28 @@ export default function HomePage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* CARROSSEL DE IMAGENS EM DESTAQUE */}
         <section className="relative mb-16 rounded-3xl overflow-hidden backdrop-blur-xl bg-stone-900/40 border border-white/15 shadow-2xl">
-          <div className="relative h-[320px] sm:h-[420px] w-full overflow-hidden">
+          <div className="relative h-[360px] sm:h-[460px] w-full overflow-hidden">
             {CAROUSEL_SLIDES.map((slide, index) => (
               <div
                 key={slide.id}
-                className={`absolute inset-0 transition-opacity duration-700 ease-in-out flex items-center justify-center ${
+                className={`absolute inset-0 transition-opacity duration-700 ease-in-out flex items-end sm:items-center justify-center p-6 ${
                   index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
                 }`}
               >
                 <div
-                  className="absolute inset-0 bg-cover bg-center filter brightness-50"
+                  className="absolute inset-0 bg-contain bg-center bg-no-repeat bg-stone-950/80"
                   style={{ backgroundImage: `url(${slide.image})` }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/20 to-transparent" />
                 
-                <div className="relative z-20 text-center px-6 max-w-2xl">
-                  <span className="inline-block px-3.5 py-1 mb-3 rounded-full text-xs tracking-widest uppercase font-semibold backdrop-blur-md bg-amber-400/20 text-amber-200 border border-amber-300/30">
+                <div className="relative z-20 text-center max-w-xl backdrop-blur-md bg-stone-900/60 p-5 sm:p-6 rounded-2xl border border-white/10 shadow-xl mb-4 sm:mb-0">
+                  <span className="inline-block px-3.5 py-1 mb-2 rounded-full text-xs tracking-widest uppercase font-semibold backdrop-blur-md bg-amber-400/20 text-amber-200 border border-amber-300/30">
                     {slide.tag}
                   </span>
-                  <h2 className="text-3xl sm:text-5xl font-light text-amber-50 tracking-wide mb-3">
+                  <h2 className="text-2xl sm:text-4xl font-light text-amber-50 tracking-wide mb-2">
                     {slide.title}
                   </h2>
-                  <p className="text-stone-300 text-sm sm:text-base font-light leading-relaxed">
+                  <p className="text-stone-300 text-xs sm:text-sm font-light leading-relaxed">
                     {slide.subtitle}
                   </p>
                 </div>
@@ -145,20 +152,20 @@ export default function HomePage() {
           {/* Botões do Carrossel */}
           <button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full backdrop-blur-md bg-stone-950/50 hover:bg-stone-900/80 text-white flex items-center justify-center border border-white/20 transition-all shadow-lg"
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full backdrop-blur-md bg-stone-950/60 hover:bg-stone-900/80 text-white flex items-center justify-center border border-white/20 transition-all shadow-lg"
             aria-label="Anterior"
           >
             ❮
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full backdrop-blur-md bg-stone-950/50 hover:bg-stone-900/80 text-white flex items-center justify-center border border-white/20 transition-all shadow-lg"
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full backdrop-blur-md bg-stone-950/60 hover:bg-stone-900/80 text-white flex items-center justify-center border border-white/20 transition-all shadow-lg"
             aria-label="Seguinte"
           >
             ❯
           </button>
 
-          {/* Indicadores do Carrossel (Dots) */}
+          {/* Indicadores do Carrossel */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-2">
             {CAROUSEL_SLIDES.map((_, idx) => (
               <button
