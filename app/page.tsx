@@ -16,12 +16,38 @@ interface Product {
   images?: string[];
 }
 
+const CAROUSEL_SLIDES = [
+  {
+    id: 1,
+    title: 'Coleção Vestuário & Estilo',
+    subtitle: 'Peças exclusivas de segunda mão na Foz do Douro',
+    image: '/bg-loja.jpg',
+    tag: 'Destaques da Semana'
+  },
+  {
+    id: 2,
+    title: 'Acessórios & Gorros',
+    subtitle: 'Marcas selecionadas como Carhartt e muito mais',
+    image: '/bg-loja.jpg',
+    tag: 'Novidades'
+  },
+  {
+    id: 3,
+    title: 'Casacos & Agasalhos',
+    subtitle: 'Conforto e elegância para os dias mais frios',
+    image: '/bg-loja.jpg',
+    tag: 'Saldos'
+  }
+];
+
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
+  // Carregar produtos do Supabase
   useEffect(() => {
     async function fetchProducts() {
       try {
@@ -41,6 +67,14 @@ export default function HomePage() {
     fetchProducts();
   }, []);
 
+  // Temporizador para o Carrossel passar automaticamente
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % CAROUSEL_SLIDES.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, []);
+
   const openProductModal = (product: Product) => {
     setSelectedProduct(product);
     setActiveImageIndex(0);
@@ -51,6 +85,14 @@ export default function HomePage() {
       return product.images;
     }
     return [product.image_url];
+  };
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % CAROUSEL_SLIDES.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + CAROUSEL_SLIDES.length) % CAROUSEL_SLIDES.length);
   };
 
   return (
@@ -68,17 +110,77 @@ export default function HomePage() {
       <Navbar />
 
       {/* CONTEÚDO PRINCIPAL */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* CABEÇALHO */}
-        <section className="text-center mb-16 max-w-3xl mx-auto">
-          <div className="inline-block p-8 rounded-3xl backdrop-blur-xl bg-stone-900/40 border border-white/10 shadow-2xl">
-            <h1 className="text-4xl sm:text-5xl font-extralight tracking-wider text-amber-50/90 mb-4">
-              Loja 19 do Mercado
-            </h1>
-            <p className="text-stone-300 font-light text-base sm:text-lg leading-relaxed">
-              Seleção exclusiva de vestuário e casacos em segunda mão no coração da Foz. Encontra peças únicas com história e elegância.
-            </p>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        {/* CARROSSEL DE IMAGENS EM DESTAQUE */}
+        <section className="relative mb-16 rounded-3xl overflow-hidden backdrop-blur-xl bg-stone-900/40 border border-white/15 shadow-2xl">
+          <div className="relative h-[320px] sm:h-[420px] w-full overflow-hidden">
+            {CAROUSEL_SLIDES.map((slide, index) => (
+              <div
+                key={slide.id}
+                className={`absolute inset-0 transition-opacity duration-700 ease-in-out flex items-center justify-center ${
+                  index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                }`}
+              >
+                <div
+                  className="absolute inset-0 bg-cover bg-center filter brightness-50"
+                  style={{ backgroundImage: `url(${slide.image})` }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-transparent" />
+                
+                <div className="relative z-20 text-center px-6 max-w-2xl">
+                  <span className="inline-block px-3.5 py-1 mb-3 rounded-full text-xs tracking-widest uppercase font-semibold backdrop-blur-md bg-amber-400/20 text-amber-200 border border-amber-300/30">
+                    {slide.tag}
+                  </span>
+                  <h2 className="text-3xl sm:text-5xl font-light text-amber-50 tracking-wide mb-3">
+                    {slide.title}
+                  </h2>
+                  <p className="text-stone-300 text-sm sm:text-base font-light leading-relaxed">
+                    {slide.subtitle}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
+
+          {/* Botões do Carrossel */}
+          <button
+            onClick={prevSlide}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full backdrop-blur-md bg-stone-950/50 hover:bg-stone-900/80 text-white flex items-center justify-center border border-white/20 transition-all shadow-lg"
+            aria-label="Anterior"
+          >
+            ❮
+          </button>
+          <button
+            onClick={nextSlide}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full backdrop-blur-md bg-stone-950/50 hover:bg-stone-900/80 text-white flex items-center justify-center border border-white/20 transition-all shadow-lg"
+            aria-label="Seguinte"
+          >
+            ❯
+          </button>
+
+          {/* Indicadores do Carrossel (Dots) */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+            {CAROUSEL_SLIDES.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentSlide(idx)}
+                className={`h-2.5 rounded-full transition-all duration-300 ${
+                  idx === currentSlide ? 'w-8 bg-amber-300' : 'w-2.5 bg-white/40 hover:bg-white/70'
+                }`}
+                aria-label={`Ir para slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* CABEÇALHO DE SEÇÃO */}
+        <section className="text-center mb-12 max-w-3xl mx-auto">
+          <h1 className="text-3xl sm:text-4xl font-extralight tracking-wider text-amber-50/90 mb-3">
+            Catálogo de Peças Únicas
+          </h1>
+          <p className="text-stone-300 font-light text-sm sm:text-base leading-relaxed">
+            Explora a nossa seleção exclusiva de vestuário e casacos em segunda mão no Mercado da Foz.
+          </p>
         </section>
 
         {/* GRELHA DE PRODUTOS */}
