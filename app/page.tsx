@@ -219,3 +219,20 @@ export default function HomePage() {
                 </div>
 
                 <a
+                  href={`https://wa.me/351910000000?text=${encodeURIComponent(
+                    `Olá! Tenho interesse em adquirir o artigo: "${selectedProduct.title}" (${selectedProduct.price.toFixed(2)}€) da Loja 19 do Mercado.`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-200 to-amber-400 text-stone-900 font-semibold text-center hover:from-amber-300 hover:to-amber-500 transition-all shadow-lg flex items-center justify-center gap-2"
+                >
+                  💬 Reservar / Comprar no WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
