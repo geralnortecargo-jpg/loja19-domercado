@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import Navbar from '../components/Navbar';
 
 interface Product {
   id: string;
@@ -74,7 +73,7 @@ export default function HomePage() {
     fetchProducts();
   }, []);
 
-  // Temporizador para o Carrossel passar automaticamente
+  // Temporizador do Carrossel
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % CAROUSEL_SLIDES.length);
@@ -104,46 +103,47 @@ export default function HomePage() {
 
   return (
     <div className="relative min-h-screen text-stone-100 selection:bg-stone-700 selection:text-white">
-      {/* BACKGROUND DA LOJA COM OVERLAY SUAVE */}
+      {/* BACKGROUND DA LOJA */}
       <div className="fixed inset-0 -z-10 overflow-hidden bg-stone-950">
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-30 scale-105"
+          className="absolute inset-0 bg-cover bg-center opacity-25 scale-105"
           style={{ backgroundImage: `url('/bg-loja.jpg')` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-stone-950/70 via-stone-900/50 to-stone-950/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-stone-950/80 via-stone-900/60 to-stone-950/90" />
       </div>
 
-      {/* NAVBAR EM VIDRO OPACO */}
-      <Navbar />
-
       {/* CONTEÚDO PRINCIPAL */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* CARROSSEL DE IMAGENS EM DESTAQUE */}
-        <section className="relative mb-16 rounded-3xl overflow-hidden backdrop-blur-xl bg-stone-900/40 border border-white/15 shadow-2xl">
-          <div className="relative h-[360px] sm:h-[460px] w-full overflow-hidden">
+        <section className="relative mb-16 rounded-3xl overflow-hidden backdrop-blur-xl bg-stone-900/50 border border-white/15 shadow-2xl">
+          <div className="relative h-[380px] sm:h-[480px] w-full overflow-hidden flex items-center justify-center">
             {CAROUSEL_SLIDES.map((slide, index) => (
               <div
                 key={slide.id}
-                className={`absolute inset-0 transition-opacity duration-700 ease-in-out flex items-end sm:items-center justify-center p-6 ${
+                className={`absolute inset-0 transition-opacity duration-700 ease-in-out flex items-center justify-center ${
                   index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
                 }`}
               >
-                <div
-                  className="absolute inset-0 bg-contain bg-center bg-no-repeat bg-stone-950/80"
-                  style={{ backgroundImage: `url(${slide.image})` }}
+                {/* IMAGEM DO SLIDE */}
+                <img
+                  src={slide.image}
+                  alt={slide.title}
+                  className="w-full h-full object-cover sm:object-contain bg-stone-950/80"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/20 to-transparent" />
                 
-                <div className="relative z-20 text-center max-w-xl backdrop-blur-md bg-stone-900/60 p-5 sm:p-6 rounded-2xl border border-white/10 shadow-xl mb-4 sm:mb-0">
-                  <span className="inline-block px-3.5 py-1 mb-2 rounded-full text-xs tracking-widest uppercase font-semibold backdrop-blur-md bg-amber-400/20 text-amber-200 border border-amber-300/30">
-                    {slide.tag}
-                  </span>
-                  <h2 className="text-2xl sm:text-4xl font-light text-amber-50 tracking-wide mb-2">
-                    {slide.title}
-                  </h2>
-                  <p className="text-stone-300 text-xs sm:text-sm font-light leading-relaxed">
-                    {slide.subtitle}
-                  </p>
+                {/* OVERLAY DE TEXTO */}
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/30 to-transparent flex flex-col justify-end items-center p-6 text-center">
+                  <div className="backdrop-blur-md bg-stone-900/70 p-5 sm:p-6 rounded-2xl border border-white/10 shadow-2xl max-w-xl mb-6">
+                    <span className="inline-block px-3.5 py-1 mb-2 rounded-full text-xs tracking-widest uppercase font-semibold backdrop-blur-md bg-amber-400/20 text-amber-200 border border-amber-300/30">
+                      {slide.tag}
+                    </span>
+                    <h2 className="text-2xl sm:text-4xl font-light text-amber-50 tracking-wide mb-2">
+                      {slide.title}
+                    </h2>
+                    <p className="text-stone-300 text-xs sm:text-sm font-light leading-relaxed">
+                      {slide.subtitle}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))}
