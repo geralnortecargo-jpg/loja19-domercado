@@ -19,30 +19,30 @@ const CAROUSEL_SLIDES = [
   {
     id: 1,
     title: 'Vestido Boho Vintage',
-    subtitle: 'Edição limitada em segunda mão com detalhes únicos',
+    subtitle: 'Edição limitada em segunda mão com detalhes únicos.',
     image: '/vestido.jpg',
     tag: 'Destaque'
   },
   {
     id: 2,
+    title: 'Especial Natal na Foz',
+    subtitle: 'Peças aconchegantes e seleção especial para a época festiva.',
+    image: '/lojanatal.jpg',
+    tag: 'Época Festiva'
+  },
+  {
+    id: 3,
     title: 'Gorro Carhartt Azul',
-    subtitle: 'Estilo urbano e proteção para os dias frios',
+    subtitle: 'Estilo urbano e proteção para os dias frios.',
     image: '/gorro.jpg',
     tag: 'Novidade'
   },
   {
-    id: 3,
+    id: 4,
     title: 'Casaco Acolchoado Cinza',
-    subtitle: 'Conforto e elegância para a estação',
+    subtitle: 'Conforto e elegância para a estação.',
     image: '/casaco.jpg',
     tag: 'Saldos'
-  },
-  {
-    id: 4,
-    title: 'Calças Padrão Bandana',
-    subtitle: 'Corte moderno e tecido confortável',
-    image: '/calcas.jpg',
-    tag: 'Exclusivo'
   }
 ];
 
@@ -53,7 +53,6 @@ export default function HomePage() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Carregar produtos do Supabase
   useEffect(() => {
     async function fetchProducts() {
       try {
@@ -73,11 +72,10 @@ export default function HomePage() {
     fetchProducts();
   }, []);
 
-  // Temporizador do Carrossel
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % CAROUSEL_SLIDES.length);
-    }, 4500);
+    }, 5000);
     return () => clearInterval(timer);
   }, []);
 
@@ -93,14 +91,6 @@ export default function HomePage() {
     return [product.image_url];
   };
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % CAROUSEL_SLIDES.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + CAROUSEL_SLIDES.length) % CAROUSEL_SLIDES.length);
-  };
-
   return (
     <div className="relative min-h-screen text-stone-100 selection:bg-stone-700 selection:text-white">
       {/* BACKGROUND DA LOJA */}
@@ -112,75 +102,72 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-b from-stone-950/80 via-stone-900/60 to-stone-950/90" />
       </div>
 
-      {/* CONTEÚDO PRINCIPAL */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* CARROSSEL DE IMAGENS EM DESTAQUE */}
-        <section className="relative mb-16 rounded-3xl overflow-hidden backdrop-blur-xl bg-stone-900/50 border border-white/15 shadow-2xl">
-          <div className="relative h-[380px] sm:h-[480px] w-full overflow-hidden flex items-center justify-center">
+        {/* CARROSSEL */}
+        <section className="relative mb-16 rounded-3xl overflow-hidden bg-stone-900/60 border border-white/10 shadow-2xl">
+          <div className="relative h-[380px] sm:h-[480px] w-full overflow-hidden">
             {CAROUSEL_SLIDES.map((slide, index) => (
               <div
                 key={slide.id}
-                className={`absolute inset-0 transition-opacity duration-700 ease-in-out flex items-center justify-center ${
-                  index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                className={`absolute inset-0 transition-all duration-700 ease-in-out grid grid-cols-1 md:grid-cols-12 items-center ${
+                  index === currentSlide ? 'opacity-100 scale-100 z-10' : 'opacity-0 scale-95 z-0 pointer-events-none'
                 }`}
               >
-                {/* IMAGEM DO SLIDE */}
-                <img
-                  src={slide.image}
-                  alt={slide.title}
-                  className="w-full h-full object-cover sm:object-contain bg-stone-950/80"
-                />
-                
-                {/* OVERLAY DE TEXTO */}
-                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/30 to-transparent flex flex-col justify-end items-center p-6 text-center">
-                  <div className="backdrop-blur-md bg-stone-900/70 p-5 sm:p-6 rounded-2xl border border-white/10 shadow-2xl max-w-xl mb-6">
-                    <span className="inline-block px-3.5 py-1 mb-2 rounded-full text-xs tracking-widest uppercase font-semibold backdrop-blur-md bg-amber-400/20 text-amber-200 border border-amber-300/30">
-                      {slide.tag}
-                    </span>
-                    <h2 className="text-2xl sm:text-4xl font-light text-amber-50 tracking-wide mb-2">
-                      {slide.title}
-                    </h2>
-                    <p className="text-stone-300 text-xs sm:text-sm font-light leading-relaxed">
-                      {slide.subtitle}
-                    </p>
-                  </div>
+                {/* IMAGEM DO PRODUTO */}
+                <div className="absolute inset-0 md:relative md:col-span-7 h-full w-full overflow-hidden">
+                  <img
+                    src={slide.image}
+                    alt={slide.title}
+                    className="w-full h-full object-cover object-center"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-stone-950 via-stone-950/60 to-transparent" />
+                </div>
+
+                {/* TEXTO DO SLIDE */}
+                <div className="relative z-20 md:col-span-5 p-6 sm:p-10 flex flex-col items-start justify-center text-left">
+                  <span className="px-3.5 py-1 mb-3 rounded-full text-xs uppercase tracking-widest font-semibold bg-amber-400/20 text-amber-200 border border-amber-300/30 backdrop-blur-md">
+                    {slide.tag}
+                  </span>
+                  <h2 className="text-3xl sm:text-5xl font-light text-amber-50 tracking-wide mb-3 leading-tight">
+                    {slide.title}
+                  </h2>
+                  <p className="text-stone-300 text-sm sm:text-base font-light leading-relaxed mb-6">
+                    {slide.subtitle}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Botões do Carrossel */}
+          {/* BOTÕES */}
           <button
-            onClick={prevSlide}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full backdrop-blur-md bg-stone-950/60 hover:bg-stone-900/80 text-white flex items-center justify-center border border-white/20 transition-all shadow-lg"
-            aria-label="Anterior"
+            onClick={() => setCurrentSlide((prev) => (prev - 1 + CAROUSEL_SLIDES.length) % CAROUSEL_SLIDES.length)}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full backdrop-blur-md bg-stone-950/60 hover:bg-amber-500/20 text-white flex items-center justify-center border border-white/20 transition-all shadow-lg"
           >
             ❮
           </button>
           <button
-            onClick={nextSlide}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full backdrop-blur-md bg-stone-950/60 hover:bg-stone-900/80 text-white flex items-center justify-center border border-white/20 transition-all shadow-lg"
-            aria-label="Seguinte"
+            onClick={() => setCurrentSlide((prev) => (prev + 1) % CAROUSEL_SLIDES.length)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full backdrop-blur-md bg-stone-950/60 hover:bg-amber-500/20 text-white flex items-center justify-center border border-white/20 transition-all shadow-lg"
           >
             ❯
           </button>
 
-          {/* Indicadores do Carrossel */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+          {/* INDICADORES */}
+          <div className="absolute bottom-5 right-6 z-30 flex gap-2">
             {CAROUSEL_SLIDES.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setCurrentSlide(idx)}
-                className={`h-2.5 rounded-full transition-all duration-300 ${
-                  idx === currentSlide ? 'w-8 bg-amber-300' : 'w-2.5 bg-white/40 hover:bg-white/70'
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  idx === currentSlide ? 'w-8 bg-amber-300' : 'w-2 bg-white/40 hover:bg-white/70'
                 }`}
-                aria-label={`Ir para slide ${idx + 1}`}
               />
             ))}
           </div>
         </section>
 
-        {/* CABEÇALHO DE SEÇÃO */}
+        {/* CATÁLOGO DE PRODUTOS */}
         <section className="text-center mb-12 max-w-3xl mx-auto">
           <h1 className="text-3xl sm:text-4xl font-extralight tracking-wider text-amber-50/90 mb-3">
             Catálogo de Peças Únicas
@@ -190,7 +177,6 @@ export default function HomePage() {
           </p>
         </section>
 
-        {/* GRELHA DE PRODUTOS */}
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <div className="px-6 py-4 rounded-2xl backdrop-blur-md bg-stone-900/50 border border-white/10 text-stone-300">
